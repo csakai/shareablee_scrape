@@ -41,18 +41,16 @@ if len(nodes) == 206:
 
 G = nx.DiGraph()
 
-n=0
+# n=0
 for country in nodes:
   G.add_edges_from(edge_list(nodes[country], soup_adjacency(country,nodes)))
   print repr(nodes[country]), "added."
-  if n>=10:
-    break
-  n+=1
+#   if n>=100:
+#     break
+#   n+=1
+# print "Limited to", n
 del nodes
-# print "\n"
-# print "All scraped at ", len(adjacency_matrix.keys()), "nodes."
-print "Limited to 10"
 
-nx.draw_circular(G, ax=None, node_size=20, node_color="k", width=0.1, edge_color="#3300cc", font_family="monospace", font_weight="bold", font_color="#33cc00", with_labels=True)
+nx.draw_circular(G, ax=None, node_size=20, node_color="k", width=0.01, edge_color="#3300cc", font_family="monospace", font_weight="bold", font_color="#33cc00", with_labels=True)
 plt.axis('off')
 plt.show()
