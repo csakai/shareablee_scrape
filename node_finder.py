@@ -51,18 +51,19 @@ n=0
 for country in nodes:
   adjacency_matrix[nodes[country]] = soup_adjacency(country, nodes)
   print repr(nodes[country]), ":", len(adjacency_matrix[nodes[country]])
-  if n>=5:
+  if n>=10:
     break
   n+=1
 del nodes
-print "\n"
-#print "All scraped at ", len(adjacency_matrix.keys()), "nodes."
-print "Limited to 5"
+# print "\n"
+# print "All scraped at ", len(adjacency_matrix.keys()), "nodes."
+print "Limited to 10"
 
 G = nx.DiGraph()
 G.add_nodes_from(adjacency_matrix.keys())
 for country in adjacency_matrix:
   G.add_edges_from(edge_list(country, adjacency_matrix[country]))
 
-nx.draw_circular(G, with_labels=True)
+nx.draw_circular(G, ax=None, node_size=20, node_color="k", width=0.1, edge_color="#3300cc", font_family="monospace", font_weight="bold", font_color="#33cc00", with_labels=True)
+plt.axis('off')
 plt.show()
