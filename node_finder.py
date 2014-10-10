@@ -15,9 +15,16 @@ def get_country(link):
   return (link.attrs.get('href'), link.attrs.get('title'))
 
 def soup_adjacency(country_slug, nodes):
-  page = requests.get(base_url + country_slug)
-  links = bs4.BeautifulSoup(page.text, "html5lib").select('a[href^=/wiki/]')
-  return set([nodes[a.attrs.get('href')] for a in links if a.attrs.get('href') and a.attrs.get('href') in nodes.keys()])
+  try:
+    page = requests.get(base_url + country_slug)
+    links = bs4.BeautifulSoup(page.text, "html5lib").select('a[href^=/wiki/]')
+    edges = [nodes[a.attrs.get('href')] for a in links if a.attrs.get('href') and a.attrs.get('href') in nodes.keys()]
+  except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+    edges = list(soup_adjacency(country_slug, nodes))
+  finally:
+    if not edges:
+      edges = []
+  return set(edges)
 
 def list_single_ended(country, matrix):
   return set([dest for dest in matrix[country] if country not in matrix[dest]])
