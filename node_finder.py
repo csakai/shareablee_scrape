@@ -1,4 +1,4 @@
-import requests, bs4, re, html5lib
+import requests, bs4, html5lib, networkx as nx, matplotlib.pyplot as plt
 
 base_url = 'http://en.wikipedia.org'
 list_url = base_url +'/wiki/List_of_sovereign_states'
@@ -26,6 +26,9 @@ def soup_adjacency(country_slug, nodes):
       edges = []
   return set(edges)
 
+def edge_list(country, node_set):
+  return [(country, node) for node in node_set]
+
 def list_single_ended(country, matrix):
   return set([dest for dest in matrix[country] if country not in matrix[dest]])
 
@@ -44,8 +47,22 @@ if u'Transnistria' in nodes.values():
 
 adjacency_matrix = {}
 
+n=0
 for country in nodes:
   adjacency_matrix[nodes[country]] = soup_adjacency(country, nodes)
-  print repr(nodes[country]), ":", repr(adjacency_matrix[nodes[country]])
+  print repr(nodes[country]), ":", len(adjacency_matrix[nodes[country]])
+  if n>=5:
+    break
+  n+=1
+del nodes
 print "\n"
-print "All scraped at ", len(adjacency_matrix.keys()), "nodes."
+#print "All scraped at ", len(adjacency_matrix.keys()), "nodes."
+print "Limited to 5"
+
+G = nx.DiGraph()
+G.add_nodes_from(adjacency_matrix.keys())
+for country in adjacency_matrix:
+  G.add_edges_from(edge_list(country, adjacency_matrix[country]))
+
+nx.draw_circular(G, with_labels=True)
+plt.show()
